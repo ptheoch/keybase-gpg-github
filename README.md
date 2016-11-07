@@ -2,14 +2,14 @@
 
 This is a step-by-step guide on how to create a GPG key on [keybase.io](https://keybase.io), adding it to a local GPG setup and use it with Git and GitHub.
 
-Although this guide was written for OS X, most commands should work in other operating systems as well.
+Although this guide was written for Debian Jessie, it should work on other distributions as well.
 
 [Discussion](https://news.ycombinator.com/item?id=12289481) on Hacker News.
 
 ## Requirements
 
 ```sh
-$ brew install gpg keybase
+$ sudo apt-get install gnupg2 keybase
 ```
 
 You should already have an account with Keybase and be signed in locally using `$ keybase login`. In case you need to set up a new device first, follow the instructions provided by the keybase command during login.
@@ -53,7 +53,7 @@ $ git config --global commit.gpgsign true
 $ open https://github.com/settings/keys
 # Click "New GPG key"
 
-$ keybase pgp export -q CB86A866E870EE00 | pbcopy # copy public key to clipboard
+$ keybase pgp export -q CB86A866E870EE00 | xclip -selection clipboard # copy public key to clipboard
 # Paste key, save
 ```
 
@@ -75,8 +75,7 @@ $ keybase pgp export -q CB86A866E870EE00 --secret | gpg --allow-secret-key-impor
 ## Optional: Set as default GPG key
 
 ```sh
-$ $EDITOR ~/.gnupg/gpg.conf
-# Add line: default-key E870EE00
+$ echo "default-key E870EE00" >> ~/.gnupg/gpg.conf
 ```
 
 ## Optional: Don't ask for password every time
@@ -84,26 +83,16 @@ $ $EDITOR ~/.gnupg/gpg.conf
 Install the needed software:
 
 ```sh
-$ brew install gpg-agent pinentry-mac
+$ sudo apt-get install gnupg-agent pinentry-qt # or pinentry-gtk2 if you don't have qt
 ```
 
 Enable agent use:
 
 ```sh
-$ $EDITOR ~/.gnupg/gpg.conf
-# uncomment the use-agent line
+$ echo "use-agent" >> ~/.gnupg/gpg.conf
 ```
 
-Setup agent:
-
-```sh
-$ $EDITOR ~/.gnupg/gpg-agent.conf
-# Paste these lines:
-use-standard-socket
-pinentry-program /usr/local/bin/pinentry-mac
-```
-
-Link pinentry and agent together:
+Set gpg-agent environment:
 
 ```sh
 $ $EDITOR ~/.profile # or other file that is sourced every time
